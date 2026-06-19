@@ -17,7 +17,7 @@ const CATEGORIES: Category[] = [
     id: "exchange", icon: "📈", title: "Exchange de Criptomonedas",
     subtitle: "Compra, vende e intercambia cripto", hot: true,
     links: [
-      { name: "Binance", href: "TU_LINK_BINANCE", badge: "Hasta $100 USDT", hot: true },
+      { name: "Binance", href: "https://www.binance.com/referral/earn-together/refer2earn-usdc/claim?hl=es&ref=GRO_28502_Z3JGY&utm_source=referral_entrance", badge: "Hasta $100 USDT", hot: true },
       { name: "CoinEx",  href: "TU_LINK_COINEX",  badge: "Hasta $100 + 20% fee" },
       { name: "Margex",  href: "TU_LINK_MARGEX",  badge: "$50 registro + 20% depósito" },
       { name: "Bybit",   href: "TU_LINK_BYBIT",   badge: "Hasta $5,050 USDT" },
