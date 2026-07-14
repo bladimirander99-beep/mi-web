@@ -1,8 +1,9 @@
 "use client";
+import Navbar from "./components/Navbar";
 import { useState, useCallback } from "react";
 
 /* ── TYPES ── */
-interface RefItem { name: string; href: string; badge: string; hot?: boolean; videoId?: string; }
+interface RefItem { name: string; href: string; badge: string; hot?: boolean; videoId?: string; desc?: string; }
 interface Category {
   id: string; icon: string; title: string; subtitle: string; hot?: boolean;
   links: RefItem[];
@@ -17,13 +18,12 @@ const CATEGORIES: Category[] = [
     id: "exchange", icon: "📈", title: "Exchange de Criptomonedas",
     subtitle: "Compra, vende e intercambia cripto", hot: true,
     links: [
-      { name: "Binance", href: "https://www.binance.com/referral/earn-together/refer2earn-usdc/claim?hl=es&ref=GRO_28502_Z3JGY&utm_source=referral_entrance", badge: "Hasta $100 USDT", hot: true },
-      { name: "CoinEx",  href: "TU_LINK_COINEX",  badge: "Hasta $100 + 20% fee" },
-      { name: "Margex",  href: "TU_LINK_MARGEX",  badge: "$50 registro + 20% depósito" },
-      { name: "Bybit",   href: "TU_LINK_BYBIT",   badge: "Hasta $5,050 USDT" },
-      { name: "MEXC",    href: "TU_LINK_MEXC",    badge: "Hasta $8,000 USDT" },
-      { name: "Lemon",   href: "TU_LINK_LEMON",   badge: "Bono al registrarte" },
-      { name: "BingX",   href: "TU_LINK_BINGX",   badge: "Hasta $6,000 USDT" },
+      { name: "Binance", href: "https://www.binance.com/referral/earn-together/refer2earn-usdc/claim?hl=es&ref=GRO_28502_Z3JGY&utm_source=referral_entrance", badge: "Hasta $100 USDT", hot: true, desc: "El exchange #1 del mundo. Compra, vende y gana comisiones por cada persona que invites a operar." },
+      { name: "CoinEx",  href: "https://www.coinex.com/register?rc=tm3rg&channel=Referral",  badge: "Hasta $100 + 20% fee", desc: "Exchange con más de 700 monedas. Gana el 20% de las comisiones de cada referido de por vida." },
+      { name: "Margex",  href: "https://margex.com/?rid=85014048",  badge: "$50 registro + 20% depósito", desc: "Plataforma de futuros con staking integrado. Gana intereses sobre tu cripto mientras operas." },
+      { name: "Bybit",   href: "https://www.bybit.com/invite?ref=DAN9B0Y&medium=referral&utm_campaign=evergreen&share_to=link",   badge: "Hasta $5,050 USDT", desc: "Exchange de futuros top 3 mundial. Opera con apalancamiento y gana hasta 30% de comisión por referido." },
+      { name: "MEXC",    href: "https://promote.mexc.com/r/zADNeckgHG",    badge: "Hasta $8,000 USDT", desc: "0% de comisión en spot. Ideal para operar altcoins nuevas con potencial de 10x antes que nadie." },
+      { name: "BingX",   href: "https://bingxdao.com/invite/PKG0CK/",   badge: "Hasta $6,000 USDT", desc: "Exchange con copy trading integrado. Copia a los mejores traders y gana sin necesitar experiencia." },
       { name: "Próximamente #8",  href: "#", badge: "🔒 Próximo" },
       { name: "Próximamente #9",  href: "#", badge: "🔒 Próximo" },
       { name: "Próximamente #10", href: "#", badge: "🔒 Próximo" },
@@ -32,9 +32,9 @@ const CATEGORIES: Category[] = [
     ],
     manualLabel: "MANUAL: CÓMO GANAR CON EXCHANGES",
     steps: [
-      { title: "Regístrate con mi link", desc: "Crea tu cuenta usando el link de referido. Obtienes bonos y descuento en comisiones desde el día 1." },
+      { title: "¡Regístrate ahora y activa tu bono!", desc: "Crea tu cuenta usando el link exclusivo. Activa tu bono de bienvenida y descuento en comisiones desde el día 1." },
       { title: "Completa la verificación KYC", desc: "Sube tu documento de identidad para desbloquear todos los límites de retiro y funciones completas." },
-      { title: "Obtén tu propio link de referido", desc: 'Ve a la sección "Referidos" del exchange. Copia tu link y compártelo en redes, grupos y amigos.' },
+      { title: "💸 Obtén tu link exclusivo y empieza a ganar", desc: 'Ve a la sección "Referidos" del exchange. Copia tu link y compártelo en redes, grupos y amigos.' },
       { title: "Deposita desde $10 y opera", desc: "Empieza con USDT para aprender. Cada vez que operas acumulas experiencia y ganas comisiones de tus referidos." },
       { title: "Retira tus ganancias", desc: "Usa P2P o transferencia bancaria. Binance y Bybit permiten retirar a cuentas locales en Latinoamérica." },
     ],
@@ -44,15 +44,12 @@ const CATEGORIES: Category[] = [
     id: "wallets", icon: "👛", title: "Wallets / Billeteras Digitales",
     subtitle: "Guarda y gestiona tus activos digitales",
     links: [
-      { name: "MetaMask",     href: "TU_LINK_METAMASK",     badge: "Gratis, sin comisiones" },
-      { name: "Uphold",       href: "TU_LINK_UPHOLD",       badge: "$20 BTC al registrarte" },
-      { name: "AirTM",        href: "TU_LINK_AIRTM",        badge: "Bono en primera transacción" },
-      { name: "Skrill",       href: "TU_LINK_SKRILL",       badge: "Bono al verificar cuenta" },
-      { name: "Speed Wallet", href: "TU_LINK_SPEEDWALLET",  badge: "Crypto gratis al registrar" },
-      { name: "Base",         href: "TU_LINK_BASE",         badge: "Gratis en L2 Ethereum" },
-      { name: "NC Wallet",    href: "TU_LINK_NCWALLET",     badge: "Sin comisiones + % referido" },
-      { name: "Osmo Money",   href: "TU_LINK_OSMOMONEY",    badge: "Bono al registrarte" },
-      { name: "Sweat Wallet", href: "TU_LINK_SWEATWALLET",  badge: "5 SWEAT al unirte" },
+      { name: "Uphold",       href: "https://wallet.uphold.com/signup?referral=3822c3b41e&campaign=uw_p_d_w_acq_raf&utm_source=raf&utm_medium=referafriend",       badge: "$20 BTC al registrarte", desc: "Plataforma todo-en-uno: cripto, acciones y metales. Gana intereses del 6% anual en staking." },
+      { name: "AirTM",        href: "https://app.airtm.com/ivt/bladimir2025",        badge: "Bono en primera transacción", desc: "Wallet para recibir pagos internacionales en dólares. Ideal para freelancers en Latinoamérica." },
+      { name: "Speed Wallet", href: "https://links.speed.app/referral?referral_code=1BX8DC",  badge: "Crypto gratis al registrar", desc: "Wallet Bitcoin Lightning ultra rápida. Envía y recibe BTC al instante con comisiones casi cero." },
+      { name: "Base",         href: "https://base.app/invite/friends/52MTC2PC",         badge: "Gratis en L2 Ethereum", desc: "Red Layer 2 de Coinbase. Opera en Ethereum con comisiones 100x más baratas y velocidad máxima." },
+      { name: "NC Wallet",    href: "https://ncwallet.net/invite/H5UN4SMU?lang=es",     badge: "Sin comisiones + % referido", desc: "La única wallet sin comisiones de red. Gana un % de cada transacción que hagan tus referidos." },
+      { name: "Sweat Wallet", href: "https://swe.at/c/l0G2MLlPdR",  badge: "5 SWEAT al unirte", desc: "Convierte tus pasos en cripto real. Camina diariamente y acumula tokens SWEAT canjeables por dinero." },
       { name: "Próximamente #1", href: "#", badge: "🔒 Próximo" },
       { name: "Próximamente #2", href: "#", badge: "🔒 Próximo" },
       { name: "Próximamente #3", href: "#", badge: "🔒 Próximo" },
@@ -72,15 +69,14 @@ const CATEGORIES: Category[] = [
     id: "trading", icon: "📊", title: "Trading & Análisis Técnico",
     subtitle: "Opera mercados y genera ingresos activos",
     links: [
-      { name: "Pionex",    href: "TU_LINK_PIONEX",   badge: "Hasta $10,000 USDT", hot: true },
-      { name: "Bitget",    href: "TU_LINK_BITGET",   badge: "Hasta $6,200 + 50% fee" },
-      { name: "OKX",       href: "TU_LINK_OKX",      badge: "Hasta $10,000 + 30% fee" },
-      { name: "Pocket IA", href: "TU_LINK_POCKETIA", badge: "Bono al registrarte" },
-      { name: "Próximamente #1", href: "#", badge: "🔒 Próximo" },
-      { name: "Próximamente #2", href: "#", badge: "🔒 Próximo" },
-      { name: "Próximamente #3", href: "#", badge: "🔒 Próximo" },
-      { name: "Próximamente #4", href: "#", badge: "🔒 Próximo" },
-      { name: "Próximamente #5", href: "#", badge: "🔒 Próximo" },
+      { name: "Pionex",    href: "https://accounts.pionex.com/en/signUp?r=0vApPMDEYyi",   badge: "Hasta $10,000 USDT", hot: true, desc: "Exchange con 16 bots de trading gratuitos. Automatiza tus ganancias 24/7 sin ser experto en trading." },
+      { name: "Bitget",    href: "https://share.bitget.com/u/8NB11A57",   badge: "Hasta $6,200 + 50% fee", desc: "Top 5 mundial en futuros. Copy trading de élite: replica estrategias de traders profesionales." },
+      { name: "Pocket IA", href: "https://pocket-friends.co/r/asms7iaoax", badge: "Bono al registrarte", desc: "Trading potenciado con inteligencia artificial. Señales automáticas para maximizar tus operaciones." },
+      { name: "RoboForex",  href: "https://my.roboforex.com/es/?a=gyqnr", badge: "Hasta $30 bono", desc: "Broker Forex regulado con 30 años de trayectoria. Opera divisas, acciones y cripto con spreads desde 0." },
+      { name: "Rinfinity",   href: "https://rinfinity.com/a/gyqnr",           badge: "Bono al registrarte", desc: "Plataforma de inversión automatizada. Genera rendimientos pasivos con bots de trading profesionales." },
+      { name: "Weltrade",  href: "https://track.gowt.me/visit/?bta=74709&brand=weltrade", badge: "Bono al registrarte", desc: "Broker Forex internacional regulado. Opera divisas y metales con spreads competitivos y retiros rápidos." },
+      { name: "XM", href: "https://www.xmglobal.com/referral?token=1jVIbOJXgELIltVKpTyjZg", badge: "Bono $30 sin depósito", desc: "Broker Forex regulado globalmente. Opera 1,000+ instrumentos con bono de $30 sin necesidad de depositar." },
+      { name: "Deriv Trader",  href: "https://deriv.partners/rx?sidc=15BA3885-70AD-45FF-955A-F3726D7C4884&utm_campaign=dynamicworks&utm_medium=affiliate&utm_source=CU74704", badge: "Cuenta demo gratis", desc: "Opera forex, opciones y sintéticos en la plataforma web de Deriv. Demo ilimitada sin depósito." },
     ],
     manualLabel: "MANUAL: TU PRIMER TRADE RENTABLE",
     steps: [
@@ -96,12 +92,12 @@ const CATEGORIES: Category[] = [
     id: "apps", icon: "📱", title: "Apps de Ganancias Pasivas",
     subtitle: "Gana dinero real usando tu teléfono",
     links: [
-      { name: "Pi Network", href: "TU_LINK_PINETWORK", badge: "π gratis al minar", hot: true },
+      { name: "Pi Network", href: "https://minepi.com/abundante1999", badge: "π gratis al minar", hot: true, desc: "Mina Pi Network desde el móvil sin gastar batería. Acumula coins antes del lanzamiento en exchanges." },
+      { name: "Reental",  href: "#", badge: "🔒 Próximamente", desc: "Inversión en bienes raíces tokenizados. Gana rentabilidad mensual en cripto sin comprar propiedades físicas." },
+      { name: "RealT",    href: "#", badge: "🔒 Próximamente", desc: "Plataforma de real estate tokenizado en USA. Recibe ingresos por alquiler en DAI directamente a tu wallet." },
+      { name: "Degoo", href: "https://cloud.degoo.com/drive-y7_y8haoh_-f", badge: "100 GB gratis", desc: "Almacenamiento en la nube con IA. Gana espacio extra invitando amigos y protege tus archivos de forma segura." },
       { name: "Próximamente #1", href: "#", badge: "🔒 Próximo" },
       { name: "Próximamente #2", href: "#", badge: "🔒 Próximo" },
-      { name: "Próximamente #3", href: "#", badge: "🔒 Próximo" },
-      { name: "Próximamente #4", href: "#", badge: "🔒 Próximo" },
-      { name: "Próximamente #5", href: "#", badge: "🔒 Próximo" },
     ],
     manualLabel: "MANUAL: INGRESO PASIVO CON APPS",
     steps: [
@@ -116,12 +112,8 @@ const CATEGORIES: Category[] = [
     id: "ia", icon: "🤖", title: "Apps de Inteligencia Artificial",
     subtitle: "Usa la IA para crear, vender y automatizar", hot: true,
     links: [
-      { name: "ChatGPT",      href: "TU_LINK_CHATGPT",      badge: "1 mes Plus gratis", hot: true },
-      { name: "Midjourney",   href: "TU_LINK_MIDJOURNEY",   badge: "25 imágenes gratis" },
-      { name: "ElevenLabs",   href: "TU_LINK_ELEVENLABS",   badge: "10,000 créditos gratis" },
-      { name: "Jasper IA",    href: "TU_LINK_JASPER",       badge: "7 días gratis" },
-      { name: "Kling IA",     href: "TU_LINK_KLING",        badge: "Créditos gratis al entrar" },
-      { name: "Leonardo IA",  href: "TU_LINK_LEONARDO",     badge: "150 tokens gratis/día" },
+      { name: "ElevenLabs",   href: "https://try.elevenlabs.io/up7wrcbk6uh9",   badge: "10,000 créditos gratis", desc: "Clona y sintetiza voces con IA. Ofrece servicios de narración, doblaje y podcasts a clientes." },
+      { name: "Jasper IA",    href: "TU_LINK_JASPER",       badge: "7 días gratis", desc: "Redacción con IA para negocios. Crea blogs, anuncios y emails que venden, y ofrécelo como servicio." },
       { name: "Próximamente #1", href: "#", badge: "🔒 Próximo" },
       { name: "Próximamente #2", href: "#", badge: "🔒 Próximo" },
       { name: "Próximamente #3", href: "#", badge: "🔒 Próximo" },
@@ -142,10 +134,10 @@ const CATEGORIES: Category[] = [
     id: "video", icon: "🎬", title: "Edición de Video & Contenido",
     subtitle: "Crea contenido y monetiza tu creatividad",
     links: [
-      { name: "CapCut",     href: "TU_LINK_CAPCUT",   badge: "Pro gratis 7 días", hot: true },
-      { name: "Canva Pro",  href: "TU_LINK_CANVA",    badge: "30 días Pro gratis" },
-      { name: "InVideo IA", href: "TU_LINK_INVIDEO",  badge: "Plan gratis incluido" },
-      { name: "InShot",     href: "TU_LINK_INSHOT",   badge: "Gratis + Pro con descuento" },
+      { name: "CapCut",     href: "https://www.capcut.com/capcut_pc_web/fission_receive?code=486tyE26476846&lng=es-LA",   badge: "Pro gratis 7 días", hot: true, desc: "Editor de video viral para TikTok y Reels. Crea contenido profesional desde el móvil y monetiza." },
+      { name: "Canva Pro",  href: "TU_LINK_CANVA",    badge: "30 días Pro gratis", desc: "Diseño gráfico sin ser diseñador. Crea miniaturas, posts y presentaciones que atraen clientes." },
+      { name: "InVideo IA", href: "TU_LINK_INVIDEO",  badge: "Plan gratis incluido", desc: "Convierte texto en video con IA. Crea videos para YouTube automáticamente y activa AdSense." },
+      { name: "InShot",     href: "https://v.inshot.com/invite",   badge: "Gratis + Pro con descuento", desc: "Edita videos y fotos desde el móvil. Publica contenido diario en redes y crece tu audiencia rápido." },
       { name: "Próximamente #1", href: "#", badge: "🔒 Próximo" },
       { name: "Próximamente #2", href: "#", badge: "🔒 Próximo" },
       { name: "Próximamente #3", href: "#", badge: "🔒 Próximo" },
@@ -156,7 +148,7 @@ const CATEGORIES: Category[] = [
     steps: [
       { title: "Elige tu nicho y crea tu canal", desc: "Finanzas, cripto, tecnología o estilo de vida. Crea cuentas en TikTok, YouTube Shorts e Instagram Reels." },
       { title: "Graba con tu teléfono y edita en CapCut", desc: "No necesitas cámara profesional. CapCut tiene plantillas virales, subtítulos automáticos y efectos gratis." },
-      { title: "Incluye tus links en cada video", desc: "Menciona tu link de referido en el video y ponlo en la bio. Cada vista es un potencial registro con comisión." },
+      { title: "Incluye tus links en cada video", desc: "Comparte tu link de ganancias en el video y ponlo en la bio. Cada vista es un potencial registro con comisión." },
       { title: "Publica el mismo video en 3 plataformas", desc: "TikTok + YouTube Shorts + Instagram Reels. El mismo contenido triplica tu alcance sin esfuerzo extra." },
       { title: "Activa monetización directa", desc: "YouTube: 1,000 subs + 4,000 hrs. TikTok: 10,000 seguidores. Mientras llegas, los referidos ya pagan." },
     ],
@@ -166,16 +158,16 @@ const CATEGORIES: Category[] = [
     id: "juegos", icon: "🎮", title: "Juegos Play-to-Earn",
     subtitle: "Juega y gana criptomonedas reales",
     links: [
-      { name: "Sweatcoin",    href: "TU_LINK_SWEATCOIN",   badge: "5 SWC al registrarte", hot: true },
-      { name: "Tetro Tiles",  href: "TU_LINK_TETROTILES",  badge: "Monedas gratis al entrar" },
-      { name: "An Earn App",  href: "TU_LINK_ANEARNAPP",   badge: "Bono de bienvenida" },
-      { name: "Faucet Crypto",href: "TU_LINK_FAUCETCRYPTO",badge: "Crypto gratis cada hora" },
-      { name: "Shappi",       href: "TU_LINK_SHAPPI",      badge: "Bono al registrarte" },
+      { name: "Sweatcoin",    href: "https://swcapp.com/i/deividcotacachi",   badge: "5 SWC al registrarte", hot: true, desc: "Camina y gana. Cada paso que das se convierte en monedas canjeables por dinero o productos reales." },
+      { name: "An Earn App",  href: "https://crrnt.me/EYOj8s1jE4b",   badge: "Bono de bienvenida", desc: "Completa tareas, ve anuncios y gana dinero real. Retira por PayPal, cripto o tarjeta de regalo." },
+      { name: "Faucet Crypto",href: "https://faucetcrypto.com/r/315063",badge: "Crypto gratis cada hora", desc: "Reclama cripto gratis cada hora. Acumula BTC, ETH y más sin invertir un solo centavo." },
+      { name: "Shappi",       href: "https://app.shappi.com/?redirection_type=COUPON&type=REFERRED&coupon=BLAC4",      badge: "Bono al registrarte", desc: "App de delivery que premia a sus usuarios. Gana cripto por cada compra y por referir amigos." },
+      { name: "RollerCoin", href: "https://rollercoin.com/?r=mak43y4r", badge: "Bonos de minería gratis", desc: "Juego de minería virtual de cripto. Completa misiones, juega minijuegos y gana BTC, ETH y DOGE reales." },
+      { name: "1Win", href: "https://1win.com/?p=ww9t", badge: "Bono 500% primer depósito", desc: "Casino y apuestas deportivas online. Bono de bienvenida del 500% en tu primer depósito. +10,000 juegos disponibles." },
       { name: "Próximamente #1", href: "#", badge: "🔒 Próximo" },
       { name: "Próximamente #2", href: "#", badge: "🔒 Próximo" },
       { name: "Próximamente #3", href: "#", badge: "🔒 Próximo" },
       { name: "Próximamente #4", href: "#", badge: "🔒 Próximo" },
-      { name: "Próximamente #5", href: "#", badge: "🔒 Próximo" },
     ],
     manualLabel: "MANUAL: JUEGA Y CONVIERTE EN DINERO",
     steps: [
@@ -202,7 +194,7 @@ const EARNINGS = [
 const MODULOS = [
   { n:"01", title:"Elige tu nicho rentable",        desc:"Finanzas, cripto, tech, lifestyle. Cómo encontrar el nicho que combina tu interés con demanda real de mercado." },
   { n:"02", title:"Configura tus perfiles",          desc:"Bio optimizada, foto de perfil, links en bio, y la estrategia de nombre de usuario que posiciona en buscadores." },
-  { n:"03", title:"Crea contenido que vende",        desc:"Estructura de video viral, hooks que detienen el scroll, y cómo insertar tus links de referido de forma natural." },
+  { n:"03", title:"Crea contenido que vende",        desc:"Estructura de video viral, hooks que detienen el scroll, y cómo insertar tus links de ganancias de forma natural." },
   { n:"04", title:"Estrategia de publicación",       desc:"Horarios óptimos, frecuencia ideal, y cómo reutilizar 1 video en TikTok, YouTube Shorts, Instagram y Facebook." },
   { n:"05", title:"Monetización con referidos",      desc:"Cómo estructurar tus links, usar Linktree, y rastrear cuáles plataformas te generan más comisiones." },
   { n:"06", title:"Crece tu comunidad rápido",       desc:"Colaboraciones, comentarios estratégicos, duetos en TikTok y cómo usar tendencias sin perder tu identidad." },
@@ -305,23 +297,112 @@ function VideoPlayer() {
   );
 }
 
+/* ── APP LOGO DOMAINS ── */
+const APP_DOMAINS: Record<string, string> = {
+  "Binance":       "binance.com",
+  "CoinEx":        "coinex.com",
+  "Margex":        "margex.com",
+  "Bybit":         "bybit.com",
+  "MEXC":          "mexc.com",
+  "Lemon":         "lemon.me",
+  "BingX":         "bingx.com",
+  "MetaMask":      "metamask.io",
+  "Uphold":        "uphold.com",
+  "AirTM":         "airtm.com",
+  "Skrill":        "skrill.com",
+  "Speed Wallet":  "speed-wallet.io",
+  "Base":          "base.org",
+  "NC Wallet":     "ncwallet.net",
+  "Osmo Money":    "osmo.money",
+  "Sweat Wallet":  "sweateconomy.com",
+  "Pionex":        "pionex.com",
+  "Bitget":        "bitget.com",
+  "OKX":           "okx.com",
+  "Pocket IA":     "pocketoption.com",
+  "ChatGPT":       "openai.com",
+  "Midjourney":    "midjourney.com",
+  "ElevenLabs":    "elevenlabs.io",
+  "Jasper IA":     "jasper.ai",
+  "Kling IA":      "klingai.com",
+  "Leonardo IA":   "leonardo.ai",
+  "CapCut":        "capcut.com",
+  "Canva Pro":     "canva.com",
+  "InVideo IA":    "invideo.io",
+  "InShot":        "inshot.com",
+  "Sweatcoin":     "sweatco.in",
+  "Tetro Tiles":   "tetrotiles.com",
+  "An Earn App":   "anearnapp.com",
+  "Faucet Crypto": "faucetcrypto.com",
+  "Shappi":        "shappi.io",
+  "RollerCoin":    "rollercoin.com",
+  "1Win":          "1win.com",
+  "Degoo":         "degoo.com",
+  "Reental":       "reental.co",
+  "RealT":         "realt.co",
+  "Pi Network":    "minepi.com",
+  "XM":            "xm.com",
+  "Weltrade":      "weltrade.com",
+  "RoboForex":     "roboforex.com",
+  "Rinfinity":     "rinfinity.com",
+};
+
+function getLogoUrl(name: string): string {
+  const domain = APP_DOMAINS[name];
+  if (!domain) return "";
+  return `https://logo.clearbit.com/${domain}`;
+}
+
+function getFaviconUrl(name: string): string {
+  const domain = APP_DOMAINS[name];
+  if (!domain) return "";
+  return `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
+}
+
 /* ── REF ITEM ── */
 function RefItem({ item }: { item: RefItem }) {
+  const [imgError, setImgError] = useState(false);
+  const [bannerError, setBannerError] = useState(false);
+  const logoUrl = getLogoUrl(item.name);
+  const faviconUrl = getFaviconUrl(item.name);
+  const isPending = item.href === "#";
+
   return (
     <div style={{
-      border:"0.5px solid var(--dark4)", borderRadius:8,
-      overflow:"hidden", transition:"border-color .2s",
+      border: `0.5px solid ${item.hot ? "var(--gold-dark)" : "var(--dark4)"}`,
+      borderRadius:8, overflow:"hidden", transition:"border-color .2s",
+      opacity: isPending ? 0.5 : 1,
     }}>
+      {/* ── TOP ROW: logo + name + badge ── */}
       <a
         href={item.href} target="_blank" rel="noopener noreferrer"
+        onClick={isPending ? (e) => e.preventDefault() : undefined}
         style={{
-          display:"flex", alignItems:"center", justifyContent:"space-between",
-          padding:"8px 12px", textDecoration:"none",
+          display:"flex", alignItems:"center", gap:10,
+          padding:"10px 12px", textDecoration:"none",
           background:"var(--dark3)", color:"var(--text)", fontSize:13,
           borderBottom:"0.5px solid var(--dark4)",
         }}
       >
-        {item.name}
+        {/* Logo icon */}
+        {logoUrl && !imgError ? (
+          <img
+            src={logoUrl}
+            alt={item.name}
+            width={28} height={28}
+            onError={() => setImgError(true)}
+            style={{ borderRadius:6, objectFit:"contain", background:"white", padding:2, flexShrink:0 }}
+          />
+        ) : faviconUrl ? (
+          <img
+            src={faviconUrl}
+            alt={item.name}
+            width={28} height={28}
+            style={{ borderRadius:6, objectFit:"contain", flexShrink:0 }}
+          />
+        ) : (
+          <div style={{ width:28, height:28, borderRadius:6, background:"var(--dark4)", flexShrink:0 }} />
+        )}
+        <span style={{ flex:1, fontWeight:500 }}>{item.name}</span>
         <span style={{
           fontSize:11, padding:"2px 8px", borderRadius:10, whiteSpace:"nowrap",
           background: item.hot ? "rgba(0,198,255,0.15)" : "var(--dark4)",
@@ -331,7 +412,56 @@ function RefItem({ item }: { item: RefItem }) {
           {item.badge}
         </span>
       </a>
-      <VideoPlayer />
+
+      {/* ── BANNER ── */}
+      {!isPending && logoUrl && !bannerError && (
+        <a href={item.href} target="_blank" rel="noopener noreferrer"
+          style={{ display:"block", background:"var(--dark)", borderBottom:"0.5px solid var(--dark4)", overflow:"hidden", lineHeight:0 }}
+        >
+          <div style={{
+            display:"flex", alignItems:"center", justifyContent:"center",
+            gap:16, padding:"14px 16px",
+            background:"linear-gradient(135deg, var(--dark2) 0%, var(--dark3) 100%)",
+          }}>
+            <img
+              src={logoUrl}
+              alt={item.name}
+              height={48}
+              onError={() => setBannerError(true)}
+              style={{ objectFit:"contain", maxWidth:120, background:"white", borderRadius:10, padding:"6px 10px" }}
+            />
+            <div>
+              <div style={{ fontSize:13, fontWeight:600, color:"var(--text)" }}>{item.name}</div>
+              <div style={{ fontSize:11, color:"var(--gold)", marginTop:2 }}>{item.badge}</div>
+              <div style={{ fontSize:11, color:"var(--text-muted)", marginTop:4 }}>
+                {isPending ? "" : "Toca para registrarte y reclamar tu bono →"}
+              </div>
+            </div>
+          </div>
+        </a>
+      )}
+
+      {/* ── DESCRIPTION + VIDEO CTA ── */}
+      {!isPending && item.desc && (
+        <div style={{ padding:"10px 14px", background:"var(--dark2)", borderBottom:"0.5px solid var(--dark4)" }}>
+          <p style={{ fontSize:12, color:"var(--text-muted)", lineHeight:1.6, marginBottom:8 }}>
+            {item.desc}
+          </p>
+          <div style={{
+            display:"inline-flex", alignItems:"center", gap:6,
+            fontSize:11, color:"var(--gold)",
+            background:"rgba(0,198,255,0.08)",
+            border:"0.5px solid var(--gold-dark)",
+            borderRadius:20, padding:"3px 12px",
+          }}>
+            <span>🎬</span>
+            <span>{"¡Aquí está el video instructivo! Ábrelo abajo 👇"}</span>
+          </div>
+        </div>
+      )}
+
+      {/* ── VIDEO PLAYER ── */}
+      {!isPending && <VideoPlayer />}
     </div>
   );
 }
@@ -372,7 +502,7 @@ function CategoryCard({ cat, onAddLink }: { cat: Category; onAddLink: (id: strin
         {/* Left — links */}
         <div style={{ padding:"1.5rem", borderRight:"0.5px solid var(--dark4)" }}>
           <span style={{ fontSize:11, letterSpacing:"1.5px", color:"var(--gold-dark)", marginBottom:"0.6rem", display:"block" }}>
-            MIS LINKS DE REFERIDO
+            🚀 ACCEDE · REGÍSTRATE · GANA
           </span>
           <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
             {links.map((lnk, i) => <RefItem key={i} item={lnk} />)}
@@ -480,7 +610,7 @@ function AddLinkModal({ catId, onClose, onSave }: {
 }
 
 const PLAN_90 = [
-  { n:1, t:"Días 1 al 10: Configura todo",        d:"Perfiles, links de referido, bio optimizada y primeros 3 videos publicados." },
+  { n:1, t:"Días 1 al 10: Configura todo",        d:"Perfiles, perfiles activos, bonos reclamados y primeros 3 videos publicados." },
   { n:2, t:"Días 11 al 30: Consistencia diaria",  d:"1 video por día. Analiza qué formato tiene más vistas y doble apuesta en ese estilo." },
   { n:3, t:"Días 31 al 60: Optimizar y crecer",   d:"Colabora con otros creadores, responde comentarios, usa IA para acelerar la producción." },
   { n:4, t:"Días 61 al 90: Monetización activa",  d:"Ya tienes audiencia. Activa AdSense, busca brand deals y tus referidos ya generan ingresos pasivos." },
@@ -576,57 +706,80 @@ export default function Page() {
         html { scroll-behavior:smooth; }
         body { background:var(--dark); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; }
         a:hover { color:var(--gold) !important; }
-        @media(max-width:700px){
-          .cat-body { grid-template-columns:1fr !important; }
-          .cat-left-col { border-right:none !important; border-bottom:0.5px solid var(--dark4) !important; }
+        @media (max-width:900px){
+        .desktop-menu{
+          display:none !important;
+        }
+        .mobile-button{
+          display:block !important;
+          background:none;
+          border:none;
+          color:white;
+          font-size:30px;
+          cursor:pointer;
+        }
+        .cat-body{
+          grid-template-columns:1fr !important;
+        }
+        .cat-left-col{
+          border-right:none !important;
+          border-bottom:1px solid var(--dark4)!important;
+        }
+        .curso-body{
+          grid-template-columns:1fr !important;
+        }
+        .plat-grid{
+          grid-template-columns:1fr !important;
+        }
+      }
           .curso-body { grid-template-columns:1fr !important; }
           .nav-links { display:none !important; }
           .plat-grid { grid-template-columns:1fr !important; }
         }
       `}</style>
-
       {/* NAV */}
-      <nav style={{
-        background:"var(--dark2)", borderBottom:"0.5px solid var(--gold-dark)",
-        padding:"0 2rem", display:"flex", alignItems:"center", justifyContent:"space-between",
-        height:60, position:"sticky", top:0, zIndex:100,
-      }}>
-        <div style={{ fontSize:20, fontWeight:700, color:"var(--gold)" }}>
-          Dinero<span style={{ color:"var(--text)", fontWeight:400 }}> Abundante</span>
-        </div>
-        <ul className="nav-links" style={{ display:"flex", gap:"1.2rem", listStyle:"none", flexWrap:"wrap" }}>
-          {["exchange","wallets","trading","apps","ia","video","juegos","redes"].map(id => (
-            <li key={id}><a href={`#${id}`} style={{ color:"var(--text-muted)", textDecoration:"none", fontSize:13 }}>
-              {id.charAt(0).toUpperCase() + id.slice(1)}
-            </a></li>
-          ))}
-        </ul>
-      </nav>
+      <Navbar />
 
       {/* HERO */}
-      <div style={{ textAlign:"center", padding:"5rem 2rem 4rem", borderBottom:"0.5px solid var(--dark4)" }}>
-        <div style={{
-          display:"inline-block", background:"var(--dark4)", border:"0.5px solid var(--gold-dark)",
-          color:"var(--gold)", fontSize:12, padding:"4px 16px", borderRadius:20,
-          marginBottom:"1.5rem", letterSpacing:1,
-        }}>GANA DINERO ONLINE · PASO A PASO</div>
-        <h1 style={{ fontSize:"clamp(2rem,5vw,3.5rem)", fontWeight:700, color:"var(--gold)", lineHeight:1.15, marginBottom:"1rem" }}>
-          Tu <span style={{ color:"var(--text)" }}>libertad financiera</span><br />empieza aquí
-        </h1>
-        <p style={{ fontSize:18, color:"var(--text-muted)", maxWidth:620, margin:"0 auto 2rem" }}>
-          Exchanges, wallets, trading, apps de IA, edición de video, juegos y redes sociales — links de referido + manual completo en cada categoría.
-        </p>
-        <div style={{ display:"flex", gap:"1rem", justifyContent:"center", flexWrap:"wrap" }}>
-          <a href="#exchange" style={{
-            background:"var(--gold)", color:"var(--dark)", padding:"12px 28px",
-            borderRadius:10, fontSize:15, fontWeight:600, textDecoration:"none",
-          }}>Explorar categorías</a>
-          <a href="#redes" style={{
-            background:"transparent", color:"var(--gold)", border:"1px solid var(--gold-dark)",
-            padding:"12px 28px", borderRadius:10, fontSize:15, textDecoration:"none",
-          }}>Ver el Curso</a>
+      <section style={{ position:"relative", overflow:"hidden", padding:"7rem 2rem", textAlign:"center", background:"linear-gradient(135deg,#050D18 0%,#081729 40%,#102B4A 100%)" }}>
+        {/* Fondo decorativo */}
+        <div style={{ position:"absolute", width:500, height:500, background:"#00C6FF22", borderRadius:"50%", filter:"blur(140px)", top:-180, right:-150 }} />
+        <div style={{ position:"absolute", width:350, height:350, background:"#00E67622", borderRadius:"50%", filter:"blur(130px)", bottom:-150, left:-100 }} />
+
+        <div style={{ position:"relative", maxWidth:1100, margin:"auto", zIndex:2 }}>
+          <div style={{ display:"inline-block", padding:"8px 18px", borderRadius:40, background:"rgba(0,198,255,.15)", color:"#00C6FF", border:"1px solid #00C6FF", fontWeight:600, marginBottom:25 }}>
+            {"🚀 Más de 30 plataformas para ganar dinero online"}
+          </div>
+
+          <h1 style={{ fontSize:"clamp(2.7rem,7vw,5rem)", fontWeight:800, lineHeight:1.1, marginBottom:25 }}>
+            {"Construye múltiples"}
+            <br />
+            <span style={{ color:"#00C6FF" }}>{"fuentes de ingresos"}</span>
+          </h1>
+
+          <p style={{ maxWidth:780, margin:"auto", fontSize:20, color:"#B8D5EA", lineHeight:1.8 }}>
+            {"Aprende criptomonedas, trading, inteligencia artificial, billeteras digitales, creación de contenido y herramientas para generar ingresos desde Internet."}
+          </p>
+
+          <div style={{ display:"flex", justifyContent:"center", gap:20, flexWrap:"wrap", marginTop:45 }}>
+            <a href="#exchange" style={{ background:"#00C6FF", color:"#000", padding:"16px 35px", borderRadius:12, fontWeight:700, textDecoration:"none" }}>
+              {"💰 Ver Plataformas"}
+            </a>
+            <a href="#redes" style={{ border:"1px solid #00C6FF", color:"#00C6FF", padding:"16px 35px", borderRadius:12, textDecoration:"none", fontWeight:700 }}>
+              {"🎓 Curso Gratis"}
+            </a>
+          </div>
+
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(170px,1fr))", gap:25, marginTop:70 }}>
+            {[["30+","Plataformas"],["8","Categorías"],["100%","Gratis"],["24/7","Disponible"]].map(([n,t]) => (
+              <div key={t} style={{ background:"rgba(255,255,255,.05)", border:"1px solid rgba(255,255,255,.08)", padding:25, borderRadius:15 }}>
+                <h2 style={{ color:"#00C6FF", fontSize:34, marginBottom:8 }}>{n}</h2>
+                <p style={{ color:"#A5C4DA", fontSize:15 }}>{t}</p>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      </section>
 
       {/* STATS */}
       <div style={{
@@ -646,7 +799,7 @@ export default function Page() {
         <span style={{ fontSize:11, letterSpacing:2, color:"var(--gold)", marginBottom:"0.4rem", display:"block" }}>PLATAFORMAS Y MANUALES</span>
         <h2 style={{ fontSize:26, fontWeight:600, marginBottom:"0.4rem" }}>Todas las categorías</h2>
         <p style={{ color:"var(--text-muted)", marginBottom:"2.5rem", fontSize:15 }}>
-          Links de referido a la izquierda con video instructivo · Manual de ganancias a la derecha.
+          💰 Cada plataforma es una oportunidad. Regístrate, reclama tu bono y activa tu fuente de ingresos.
         </p>
         {categories.map(cat => (
           <CategoryCard key={cat.id} cat={cat} onAddLink={handleAddLink} />
@@ -677,7 +830,7 @@ export default function Page() {
         <div style={{ fontSize:20, fontWeight:700, color:"var(--gold)", marginBottom:"0.5rem" }}>
           Dinero<span style={{ color:"var(--text)", fontWeight:400 }}> Abundante</span>
         </div>
-        <p>De la escasez a la abundancia &#8212; cada link que usas es un paso hacia tu libertad financiera. Juntos construimos riqueza real.</p>
+        <p>De la escasez a la abundancia &#8212; cada plataforma que activas es un paso hacia tu libertad financiera. Juntos construimos riqueza real.</p>
         <p style={{ marginTop:"0.4rem", fontSize:12, color:"var(--dark4)" }}>Las ganancias mostradas son estimadas y no garantizadas. Invierte solo lo que puedas permitirte perder.</p>
       </footer>
 
